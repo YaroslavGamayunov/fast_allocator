@@ -7,7 +7,7 @@
 #include <vector>
 #include <iostream>
 #include "../src/FixedAllocator.h"
-#include "../src/FastAllocator.h"
+#include "../include/FastAllocator.h"
 #include "../src/memory_constants.h"
 
 int main() {
