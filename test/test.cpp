@@ -7,11 +7,10 @@
 #include <vector>
 #include <iostream>
 #include "../src/FixedAllocator.h"
-#include "../include/FastAllocator.h"
-#include "../src/memory_constants.h"
+#include "../include/List.h"
 
 int main() {
-    std::list<int, FastAllocator<int>> v1;
+    List<int> v1;
 
     FixedAllocator<3> a(2);
     std::vector<int> cmds;
@@ -29,7 +28,7 @@ int main() {
         }
     }
 
-    std::cout << "fast vector speed " << (clock() - time) / CLOCKS_PER_SEC << "\n";
+    std::cout << "fast list speed " << (clock() - time) / CLOCKS_PER_SEC << "\n";
 
 
     time = clock();
@@ -42,5 +41,5 @@ int main() {
         }
     }
 
-    std::cout << "usual vector speed " << (clock() - time) / CLOCKS_PER_SEC << "\n";
+    std::cout << "std list speed " << (clock() - time) / CLOCKS_PER_SEC << "\n";
 }

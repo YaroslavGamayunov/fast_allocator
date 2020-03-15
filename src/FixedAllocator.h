@@ -9,12 +9,19 @@
 #include <cstdlib>
 #include "memory_constants.h"
 
+struct MemoryDeleter {
+    template<typename T>
+    void operator()(T *pointer) {
+        free(pointer);
+    }
+};
+
 template<size_t chunkSize>
 class FixedAllocator {
 public:
     FixedAllocator(size_t initSize = 1 * MIB) {
-        memoryBegin = (char *) malloc(initSize);
-        allocPointer = (char *) memoryBegin;
+        memoryBegin = std::shared_ptr<char>((char *) malloc(initSize), MemoryDeleter());
+        allocPointer = memoryBegin.get();
         freeMemorySize = initSize;
     }
 
@@ -33,31 +40,10 @@ public:
 
     }
 
-    void freeMemory() {
-        free(memoryBegin);
-    }
-
-//    ~FixedAllocator() {
-//        std::cout << "(destructor)memory begin at " << (void *) memoryBegin << " id=" << id << "\n";
-//        free(memoryBegin);
-//        memoryBegin = 0;
-//    }
-
 private:
-    char *memoryBegin;
+    std::shared_ptr<char> memoryBegin;
     char *allocPointer = nullptr;
     size_t freeMemorySize;
 };
-
-//template<size_t chunkSize>
-//void *FixedAllocator<chunkSize>::allocateBlock(size_t n, size_t initiallyAllocatedSize) {
-//    char *allocatedMemoryBegin = (char *) malloc(n);
-//    allocPointer = allocatedMemoryBegin + initiallyAllocatedSize;
-//
-//    freeMemorySize = n - initiallyAllocatedSize;
-//    poolMemorySize = n;
-//
-//    return allocatedMemoryBegin;
-//
 
 #endif //FAST_ALLOCATOR_FIXED_ALLOCATOR_H

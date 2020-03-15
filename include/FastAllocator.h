@@ -26,6 +26,10 @@ public:
         if (sizeof(T) == 8) {
             ptr = fixedAllocator8B.allocate(n);
         }
+
+        if (sizeof(T) == 24) {
+            ptr = fixedAllocator24B.allocate(n);
+        }
         if (ptr == nullptr) {
             ptr = new T[n];
         }
@@ -33,7 +37,7 @@ public:
     }
 
     void deallocate(void *ptr, size_t n) {
-        if (sizeof(T) != 4 && sizeof(T) != 8) {
+        if (sizeof(T) != 4 && sizeof(T) != 8 && sizeof(T) != 24) {
             delete[] (T *) ptr;
         }
     }
@@ -41,19 +45,22 @@ public:
     FastAllocator() {
         fixedAllocator4B = FixedAllocator<4>(500 * MIB);
         fixedAllocator8B = FixedAllocator<8>(500 * MIB);
+        fixedAllocator24B = FixedAllocator<24>(500 * MIB);
     }
 
-    FastAllocator(const FastAllocator<value_type> &other) = default;
+    FastAllocator(const FastAllocator<value_type> &other) {
+        fixedAllocator4B = other.fixedAllocator4B;
+        fixedAllocator8B = other.fixedAllocator8B;
+        fixedAllocator24B = other.fixedAllocator24B;
+    }
 
     ~FastAllocator() {
-        fixedAllocator8B.freeMemory();
-        fixedAllocator4B.freeMemory();
     }
 
 private:
     FixedAllocator<4> fixedAllocator4B;
-
     FixedAllocator<8> fixedAllocator8B;
+    FixedAllocator<24> fixedAllocator24B;
 };
 
 #endif //FAST_ALLOCATOR_FAST_ALLOCATOR_H
