@@ -15,13 +15,13 @@ int main() {
     FixedAllocator<3> a(2);
     std::vector<int> cmds;
     for (int i = 0; i < 3e7; i++) {
-        cmds.push_back(rand() % 3);
+        cmds.push_back(rand() % 2);
     }
 
     double time = clock();
 
     for (int cmd : cmds) {
-        if (cmd == 0 && v1.size()) {
+        if (cmd == 0 && v1.size() > 0) {
             v1.pop_back();
         } else {
             v1.push_back(cmd);

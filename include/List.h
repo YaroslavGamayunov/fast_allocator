@@ -20,7 +20,7 @@ struct Node {
     Node() {}
 };
 
-template<typename T, typename Allocator = FastAllocator<Node<T>>>
+template<typename T, typename Allocator = FastAllocator<Node<T>>> // todo rebind
 class List {
 public:
     using ListNode = Node<T>;
@@ -74,15 +74,21 @@ public:
     void pop_back() {
         nElements--;
         ListNode *prevBack = listBack->previous;
-        allocator.deallocate(prevBack->next, 1);
+        allocator.deallocate(listBack, 1);
         listBack = prevBack;
+        if (nElements == 0) {
+            listFront = listBack = nullptr;
+        }
     }
 
     void pop_front() {
         nElements--;
         ListNode *nextFront = listFront->next;
-        allocator.deallocate(nextFront->previous, 1);
+        allocator.deallocate(listFront, 1);
         listFront = nextFront;
+        if (nElements == 0) {
+            listFront = listBack = nullptr;
+        }
     }
 
     void insert_before(ListNode *node, const T &value) {
